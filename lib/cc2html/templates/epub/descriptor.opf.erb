@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><package xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="id">
+  <metadata>
+    <dc:rights><%= @copy_info || 'Public domain' %></dc:rights>
+    <dc:creator opf:file-as="Unknown, Author">Unknown Author</dc:creator>
+    <dc:title><%= @title %></dc:title>
+    <dc:language xsi:type="dcterms:RFC4646">en</dc:language>
+    <dc:date opf:event="publication"><%= Time.now.strftime("%Y-%m-%d") %></dc:date>
+  </metadata>
+  <manifest>
+    <item href="navigation.html" media-type="application/xhtml+xml" id="toc" properties="nav"/>
+    <% @items_with_resource.each do |item| %>
+      <item href="<%= item.identifierref %>.html" id="<%= item.identifierref %>" media-type="application/xhtml+xml"/>
+    <% end %>
+  </manifest>
+  <spine>
+    <itemref idref="toc" linear="yes"/>
+    <% @items_with_resource.each do |item| %>
+      <itemref idref="<%= item.identifierref %>" linear="yes"/>
+    <% end %>
+  </spine>
+</package>

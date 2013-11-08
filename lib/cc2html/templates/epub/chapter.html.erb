@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.1//EN' 'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+  <title><%= @item.title %></title>
+</head>
+  <body>
+    <h1><%= @item.title %></h1>
+
+    <% if asmnt = @item.resource.assignment %>
+      <h2>Assignment</h2>
+      <p><%= asmnt.text %></p>
+      <% if asmnt.instructor_text %>
+        <p>Instructor Text: <%= asmnt.instructor_text %></p>
+      <% end %>
+      <% if asmnt.submission_formats && asmnt.submission_formats.any? %>
+        <p>Ways to turn the assignment in:</p>
+        <ul>
+          <% asmnt.submission_formats.each do |sf| %>
+            <li><%= sf %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <% if asmnt.attachments %>
+        <h3>Attachments</h3>
+        <ul>
+          <% asmnt.attachments.attachments.each do |att| %>
+            <li><%= att.href %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+
+    <% if topic = @item.resource.topic %>
+      <h2>Discussion Topic</h2>
+      <p><%= topic.text %></p>
+      <% if topic.attachments %>
+        <h3>Attachments</h3>
+        <ul>
+          <% topic.attachments.attachments.each do |att| %>
+            <li><%= att.href %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+
+    <% if web_link = @item.resource.web_link %>
+      <p>Visit the web site <a href="<%= web_link.url.href %>"><%= web_link.title %></a></p>
+    <% end %>
+
+
+  </body>
+</html>
