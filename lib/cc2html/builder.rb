@@ -4,6 +4,7 @@ module CC2HTML
       @dest_dir = dest_dir
       @manifest = manifest
       @items = manifest.organizations.organization.item.items
+      @resources = manifest.resources.resources
       lom = manifest.metadata.lom
       @title = lom.general.title.title
       @description = lom.general.description.description if lom.general.description

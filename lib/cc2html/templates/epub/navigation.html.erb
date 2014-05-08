@@ -4,7 +4,11 @@
   <body><nav xmlns="http://www.w3.org/1999/xhtml" class="book" epub:type="toc">
 <ol>
 <% @items.each do |item| %>
-  <li><a href="<%= item.identifierref %>.html"><%= item.title %></a></li>
+    <% if item.identifierref && item.identifierref != '' %>
+      <li><a href="<%= item.identifierref %>.html"><%= item.title %></a></li>
+    <% else %>
+      <h2><%= item.title %></h2>
+    <% end %>
 <% end %>
 </ol>
 </nav></body>

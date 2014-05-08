@@ -18,7 +18,8 @@ module CC2HTML
       create_opf
       create_nav
       create_chapters
-      copy_html_webresources
+      copy_images
+      copy_referenced_html_webresources
     end
 
     def create_mimetype_file
@@ -29,7 +30,7 @@ module CC2HTML
 
     def create_nav
       template = File.expand_path(TEMPLATE_DIR + 'navigation.html.erb', __FILE__)
-      path = File.join(@content_dir = File.join(@dest_dir, 'content'), 'navigation.html')
+      path = File.join(@content_dir, 'navigation.html')
 
       File.open(path, 'w') do |file|
         erb = ERB.new(File.read(template))
@@ -43,7 +44,7 @@ module CC2HTML
         next if item.resource.type == 'webcontent'
         # so stupid... I'll fix later. :)
         @item = item
-        path = File.join(@content_dir = File.join(@dest_dir, 'content'), item.identifierref + '.html')
+        path = File.join(@content_dir, item.identifierref + '.html')
         File.open(path, 'w') do |file|
           erb = ERB.new(File.read(template))
           file.write(erb.result(binding))
@@ -51,15 +52,34 @@ module CC2HTML
       end
     end
 
-    def copy_html_webresources
+    def copy_referenced_html_webresources
       return unless @zip_file.end_with?('zip') || @zip_file.end_with?('imscc')
       Zip::File.open(@zip_file) do |zipfile|
         @items_with_resource.each do |item|
           if item.resource.type == 'webcontent' && item.resource.href && item.resource.href.end_with?('html')
-            puts item.identifier
             path = File.join(@content_dir = File.join(@dest_dir, 'content'), item.identifierref + '.html')
             File.open(path, 'w') do |file|
               entry = zipfile.get_entry(item.resource.href)
+              val = entry.get_input_stream.read
+              file << val.gsub('%24IMS_CC_FILEBASE%24', 'web_resources')
+              # file << entry.get_input_stream.read
+            end
+          end
+        end
+      end
+    end
+
+    def copy_images
+      return unless @zip_file.end_with?('zip') || @zip_file.end_with?('imscc')
+      Zip::File.open(@zip_file) do |zipfile|
+        @resources.each do |resource|
+          if resource.type == 'webcontent' && resource.href &&
+                  resource.href.start_with?('web_resources') &&
+                  File.extname(resource.href) =~ /gif|jpg|png/i
+            path = File.join(@content_dir, resource.href)
+            FileUtils.mkdir_p(File.dirname(path))
+            File.open(path, 'w') do |file|
+              entry = zipfile.get_entry(resource.href)
               file << entry.get_input_stream.read
             end
           end
@@ -84,7 +104,7 @@ XML
 
     def create_opf
       template = File.expand_path(TEMPLATE_DIR + 'descriptor.opf.erb', __FILE__)
-      path = File.join(@content_dir = File.join(@dest_dir, 'content'), @file_name + '.opf')
+      path = File.join(@content_dir, @file_name + '.opf')
 
       File.open(path, 'w') do |file|
         erb = ERB.new(File.read(template))
