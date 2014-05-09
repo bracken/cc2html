@@ -2,16 +2,17 @@ module CC2HTML
   class EpubBuilder < Builder
     TEMPLATE_DIR = '../templates/epub/'
 
-    def initialize(manifest, dest_dir, zip_file=nil)
-      super(manifest, dest_dir)
+    def initialize(manifest, dest_name, zip_file, opts={})
+      super(manifest, dest_name)
       @file_name = 'cc_book'
-      @content_dir = File.join(@dest_dir, 'content')
+      @content_dir = File.join(@dest_name, 'content')
       @zip_file = zip_file
-      @items_with_resource = @items.select{|i|i.resource}
+      @items_with_resource = @manifest.organizations.organization.item.all_items.select{|i|i.resource}
+      @leave_in_folder = opts["leave_unzipped"]
     end
 
     def generate
-      FileUtils.mkdir_p(@dest_dir)
+      FileUtils.mkdir_p(@dest_name)
       create_mimetype_file
       create_meta_inf
       FileUtils.mkdir_p(@content_dir)
@@ -20,10 +21,25 @@ module CC2HTML
       create_chapters
       copy_images
       copy_referenced_html_webresources
+      compress_into_epub
+    end
+
+    def compress_into_epub
+      unless @leave_in_folder
+        epub = @dest_name + '.epub'
+        FileUtils.rm(epub)
+        Zip::File.open(epub, Zip::File::CREATE) do |zipfile|
+          Dir["#{@dest_name}/**/**"].each do |file|
+            file_path = file.sub(@dest_name+'/', '')
+            zipfile.add(file_path, file)
+          end
+        end
+        FileUtils.rmtree(@dest_name)
+      end
     end
 
     def create_mimetype_file
-      File.open(File.join(@dest_dir, 'mimetype'), 'w') do |f|
+      File.open(File.join(@dest_name, 'mimetype'), 'w') do |f|
         f << "application/epub+zip\n"
       end
     end
@@ -57,7 +73,7 @@ module CC2HTML
       Zip::File.open(@zip_file) do |zipfile|
         @items_with_resource.each do |item|
           if item.resource.type == 'webcontent' && item.resource.href && item.resource.href.end_with?('html')
-            path = File.join(@content_dir = File.join(@dest_dir, 'content'), item.identifierref + '.html')
+            path = File.join(@content_dir = File.join(@dest_name, 'content'), item.identifierref + '.html')
             File.open(path, 'w') do |file|
               entry = zipfile.get_entry(item.resource.href)
               val = entry.get_input_stream.read
@@ -88,7 +104,7 @@ module CC2HTML
     end
 
     def create_meta_inf
-      meta_dir = File.join(@dest_dir, 'META-INF')
+      meta_dir = File.join(@dest_name, 'META-INF')
       FileUtils.mkdir_p(meta_dir)
       File.open(File.join(meta_dir, 'container.xml'), 'w') do |f|
         f << <<-XML

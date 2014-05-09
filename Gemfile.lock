@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cc2html (0.0.1)
+    cc2html (0.0.2)
       builder
       happymapper
       nokogiri

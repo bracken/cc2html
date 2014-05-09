@@ -59,7 +59,16 @@
           <item identifier="I_00003" identifierref="Resource3">
             <title>Open2.net</title>
           </item>
-          <item identifier="I_00004" identifierref="Resource4">
+          <item identifier="I_00003">
+            <title>Child Folder</title>
+            <item identifier="I_00004" identifierref="Resource4">
+              <title>LTI Launch</title>
+            </item>
+          </item>
+        </item>
+        <item identifier="I_2">
+          <title>Folder 2</title>
+          <item identifier="I_00005" identifierref="Resource4">
             <title>LTI Launch</title>
           </item>
         </item>

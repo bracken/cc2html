@@ -3,14 +3,14 @@ module CC2HTML
     TEMPLATE_DIR = '../templates/html/'
     def initialize(manifest, dest_dir, zip_file)
       @manifest = manifest
-      @dest_dir = dest_dir
-      @items = manifest.organizations.organization.item.items
+      @dest_name = dest_dir
+      @root_items = manifest.organizations.organization.item.items
     end
 
     def generate
-      FileUtils.mkdir_p(@dest_dir)
+      FileUtils.mkdir_p(@dest_name)
       template = File.expand_path(TEMPLATE_DIR + 'index.html.erb', __FILE__)
-      path = File.join(@dest_dir, 'index.html')
+      path = File.join(@dest_name, 'index.html')
 
       #FileUtils.mkdir_p(File.dirname(path))
       File.open(path, 'w') do |file|

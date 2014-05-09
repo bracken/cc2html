@@ -15,22 +15,27 @@ Once RubyGems is installed you can install this gem:
 
     $ gem install cc2html
 
-Convert a Common Cartridge into HTML
+Convert a Common Cartridge into EPUB
+
+    $ cc2html migrate --format=epub <path-to-cc-backup> <name-of-epub-without-extension>
+
+Or into HTML (mostly broken) :)
 
     $ cc2html migrate <path-to-cc-backup> <path-to-html-export-directory>
 
-Or into an epub
-
-    $ cc2html migrate <path-to-cc-backup> <path-to-epub-export-directory> --format=epub
-    # then zip of the contents of the folder into a .epub
-
 ## Todo
 
- * Oh so much!
- * Support converting all Common Cartridge versions
- * Create chapters from organization sections
- * Quiz conversion
- * make epub zip automatically
+ - [ ] Oh so much!
+ - [ ] Support converting all Common Cartridge versions
+ - [x] Create chapters from organization sections
+ - [ ] Quiz conversion
+ - [ ] Styles so it looks good
+ - [ ] Configurable styles
+ - [ ] Write epub/html output tests
+ - [ ] Make HTML output work
+ - [ ] Make HTML/EPUB code more DRY
+ - [ ] Handle CC weblink/topic/assignment/LTI types better
+ - [x] Automatically zip up epub
 
 ## Contributing
 

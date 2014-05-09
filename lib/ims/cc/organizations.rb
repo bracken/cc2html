@@ -10,7 +10,33 @@ module Organizations
     attribute :identifierref, String
     element :title, String
 
-    has_many :items, Item
+    # This is so that it only select parent items of itself,
+    # otherwise HappyMapper does .// instead of ./
+    # can this reference its own namespace somehow?
+    has_many :items, Item, :xpath => "./#{HappyMapper::DEFAULT_NS}:item"
+
+    def find_by_identifier(id)
+      if id == identifier
+        self
+      else
+        items.each do |i|
+          if item = i.find_by_identifier(id)
+            return item
+          end
+        end
+      end
+    end
+
+    def attach_resources(resources)
+      @resource = resources.find_by_identifier(identifierref) if identifierref
+      items.each { |i| i.attach_resources(resources) }
+    end
+
+    def all_items(res=[])
+      res << self
+      items.each{|i|i.all_items(res)}
+      res
+    end
   end
 
   class Organization
@@ -29,7 +55,11 @@ module Organizations
     has_one :organization, Organization
 
     def find_item_by_identifier(id)
-      self.organization.item.items.find{|i| i.identifier == id}
+      organization.item.find_by_identifier(id)
+    end
+
+    def attach_resources_to_items(resources)
+      organization.item.attach_resources(resources)
     end
   end
 

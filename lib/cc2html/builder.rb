@@ -1,9 +1,9 @@
 module CC2HTML
   class Builder
-    def initialize(manifest, dest_dir)
-      @dest_dir = dest_dir
+    def initialize(manifest, dest_name)
+      @dest_name = dest_name
       @manifest = manifest
-      @items = manifest.organizations.organization.item.items
+      @root_items = manifest.organizations.organization.item.items
       @resources = manifest.resources.resources
       lom = manifest.metadata.lom
       @title = lom.general.title.title

@@ -29,16 +29,7 @@ module IMS::CC
 
     def post_process
       parse_references
-      connect_resources_to_org_item
-    end
-
-    def connect_resources_to_org_item
-      self.organizations.organization.item.items.each do |item|
-        next unless item.identifierref
-        if res = self.resources.find_by_identifier(item.identifierref)
-          item.resource = res
-        end
-      end
+      organizations.attach_resources_to_items(resources)
     end
 
     def parse_references

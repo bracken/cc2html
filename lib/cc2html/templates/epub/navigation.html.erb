@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
-  <head><title>Table of contents</title></head>
-  <body><nav xmlns="http://www.w3.org/1999/xhtml" class="book" epub:type="toc">
-<ol>
-<% @items.each do |item| %>
-    <% if item.identifierref && item.identifierref != '' %>
-      <li><a href="<%= item.identifierref %>.html"><%= item.title %></a></li>
-    <% else %>
-      <h2><%= item.title %></h2>
-    <% end %>
-<% end %>
-</ol>
-</nav></body>
+<head><title>Table of contents</title></head>
+<body>
+<nav xmlns="http://www.w3.org/1999/xhtml" class="book" epub:type="toc">
+  <% @root_items.select{|ri|ri.items.any?}.each_with_index do |root, chapter_index| %>
+    <h2>Chaper <%= chapter_index + 1 %>: <%= root.title %></h2>
+
+    <ol>
+      <% root.items.each do |item| %>
+        <% if item.identifierref && item.identifierref != '' %>
+          <li><a href="<%= item.identifierref %>.html"><%= item.title %></a></li>
+        <% else %>
+          <!-- Could have sub headers in index, but may only appropriate for pages -->
+          <!--<h3><%= item.title %></h3>-->
+        <% end %>
+      <% end %>
+    </ol>
+  <% end %>
+</nav>
+</body>
 </html>
