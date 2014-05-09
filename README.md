@@ -17,11 +17,11 @@ Once RubyGems is installed you can install this gem:
 
 Convert a Common Cartridge into EPUB
 
-    $ cc2html migrate --format=epub <path-to-cc-backup> <name-of-epub-without-extension>
+    $ cc2html convert --format=epub <path-to-cc-backup> <name-of-epub-without-extension>
 
 Or into HTML (mostly broken) :)
 
-    $ cc2html migrate <path-to-cc-backup> <path-to-html-export-directory>
+    $ cc2html convert <path-to-cc-backup> <path-to-html-export-directory>
 
 ## Todo
 

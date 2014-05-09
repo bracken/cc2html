@@ -27,7 +27,7 @@ module CC2HTML
     def compress_into_epub
       unless @leave_in_folder
         epub = @dest_name + '.epub'
-        FileUtils.rm(epub)
+        FileUtils.rm(epub) if File.exists?(epub)
         Zip::File.open(epub, Zip::File::CREATE) do |zipfile|
           Dir["#{@dest_name}/**/**"].each do |file|
             file_path = file.sub(@dest_name+'/', '')
